@@ -1,0 +1,1 @@
+export const NODEMAILER_SMTP = "NODEMAILER_SMTP";
