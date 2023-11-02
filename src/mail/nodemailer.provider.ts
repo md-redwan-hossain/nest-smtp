@@ -1,7 +1,8 @@
 import { ConfigService } from "@nestjs/config";
 import nodemailer, { Transporter } from "nodemailer";
-import { NODEMAILER_SMTP } from "./constants";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { EnvVariables } from "../env-variables.enum";
+import { NODEMAILER_SMTP } from "./constants";
 
 export const nodemailerProviders = [
   {
@@ -11,13 +12,13 @@ export const nodemailerProviders = [
       configService: ConfigService
     ): Promise<Transporter<SMTPTransport.SentMessageInfo>> => {
       return nodemailer.createTransport({
-        host: "localhost",
-        port: 25,
+        host: configService.getOrThrow(EnvVariables.SMTP_HOST),
+        port: configService.getOrThrow(EnvVariables.SMTP_PORT),
         secure: false,
-        // auth: {
-        //   user: "",
-        //   pass: ""
-        // }
+        auth: {
+          user: configService.getOrThrow(EnvVariables.SMTP_USER),
+          pass: configService.getOrThrow(EnvVariables.SMTP_PASSWORD)
+        }
       });
     }
   }
